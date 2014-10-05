@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" ng-app="aplicacion">
 <head>
 	<meta charset="UTF-8">
 	<meta name="description" content="Diseño Web Barcelona, Desarrollo Web, Marketing, Publicidad, Low Cost Solutions, Luis Fernández">
@@ -37,6 +37,39 @@
 			</div>
 		</div>
 	</nav>
+	<!-- CABECERA -->
+	<div class="row">
+		<div class="jumbotron">
+			<h1>Luis Fernández</h1>
+			<p>Aquí puedes ver los proyectos que realizo a nivel personal y profesional.</p>
+			<p><em>Ejemplos con Angular.js Bootstrap Node.js Grunt.js "Educativo no comercial"</em></p>
+		</div>
+	</div>
+	<!-- FIN CABECERA -->
+
+
+	<div class="row">
+		<div class="col-md-2"></div> <!-- COLUMNA 1 -->
+
+		<div class="col-md-8" ng-controller="tiendaControlador as tienda"> <!-- COLUMNA 2 -->
+			<div ng-hide="producto.soldOut" ng-repeat="producto in tienda.productos" class="prueba">
+				<h1> {{producto.nombre}} </h1>
+				<img ng-src="{{producto.images[0].full}}" width="100" height="100">
+				<h2> {{producto.precio | currency}} </h2>
+				<p> {{producto.descripcion}} </p>
+				<button ng-show="producto.canPurchase" class="btn btn-info">
+					Comprar
+				</button>
+				<button ng-hide="producto.canPurchase" class="btn btn-warning">
+					Agotado
+				</button>
+			</div> <!-- END CONTROLADOR -->
+		</div>
+
+		<div class="col-md-2"></div> <!-- COLUMNA 3 -->
+		
+	</div> <!-- END ROW -->
+
 	<!-- PIE DE PAGINA -->
 
 	<!-- SCRIPTS -->
@@ -44,6 +77,6 @@
 	<script src="js/library/angular-locale_ca-es.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script src="app.js"></script>
+	<script src="js/app.js"></script>
 </body>
 </html>
