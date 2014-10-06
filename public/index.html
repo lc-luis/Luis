@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" ng-app="aplicacion">
+<html lang="es" ng-app="app">
 <head>
 	<meta charset="UTF-8">
 	<meta name="description" content="Diseño Web Barcelona, Desarrollo Web, Marketing, Publicidad, Low Cost Solutions, Luis Fernández">
@@ -12,32 +12,38 @@
 	<link rel="stylesheet" href="css/estilos.css">
 
 </head>
-<body>
-	<!-- BARRA DE NAVEGACION -->
+<body  ng-controller="panelControlador as panel">
+<!-- BARRA DE NAVEGACION -->
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<!-- BOTON DE TRES LINEAS -->
+<!-- BOTON DE TRES LINEAS -->
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#links">
 					<span class="sr-only">RWD</span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<!-- LINK-LOGO DE PAGINA -->
+<!-- LINK-LOGO DE PAGINA -->
 				<a href="#" class="navbar-brand">Luis Fernández</a>
 			</div>
 
 			<div class="collapse navbar-collapse" id="links">
 				<ul class="nav navbar-nav pull-right">
-					<li class="active">
-						<a href="#">Pàgina principal</a>
+					<li ng-class="{ active:panel.isSelected(1) }">
+						<a href ng-click="panel.selectTab(1)">Galeria de productos</a>
+					</li>
+					<li ng-class="{ active:panel.isSelected(2) }">
+						<a href ng-click="panel.selectTab(2)">Insertar Producto</a>
+					</li>
+					<li ng-class="{ active:panel.isSelected(3) }">
+						<a href ng-click="panel.selectTab(3)">Editar Productos</a>
 					</li>
 				</ul>
 			</div>
 		</div>
 	</nav>
-	<!-- CABECERA -->
+<!-- CABECERA -->
 	<div class="row">
 		<div class="jumbotron">
 			<h1>Luis Fernández</h1>
@@ -45,38 +51,169 @@
 			<p><em>Ejemplos con Angular.js Bootstrap Node.js Grunt.js "Educativo no comercial"</em></p>
 		</div>
 	</div>
-	<!-- FIN CABECERA -->
+<!-- FIN CABECERA -->
 
-
+<!-- TABLA MENU -->
 	<div class="row">
-		<div class="col-md-2"></div> <!-- COLUMNA 1 -->
+		<div class="col-md-8 col-md-offset-2">
+			<ul class="nav nav-tabs">
+				<li ng-class="{ active:panel.isSelected(1)}"><a href ng-click="panel.selectTab(1)">Galeria de Productos</a></li>
+				<li ng-class="{ active:panel.isSelected(2)}"><a href ng-click="panel.selectTab(2)">Insertar Producto</a></li>
+				<li ng-class="{ active:panel.isSelected(3)}"><a href ng-click="panel.selectTab(3)">Editar Productos</a></li>
+			</ul>
+		</div>
+	</div>
+<!-- FIN TABLA MENU -->
 
-		<div class="col-md-8" ng-controller="tiendaControlador as tienda"> <!-- COLUMNA 2 -->
+<!-- PANEL 1 GALERIA -->
+	<div class="row" ng-show="panel.isSelected(1)">
+		<div class="col-md-8 col-md-offset-2" ng-controller="tiendaControlador as tienda"> <!-- COLUMNA 2 -->
 			<div ng-hide="producto.soldOut" ng-repeat="producto in tienda.productos" class="prueba">
 				<h1> {{producto.nombre}} </h1>
 				<img ng-src="{{producto.images[0].full}}" width="100" height="100">
 				<h2> {{producto.precio | currency}} </h2>
 				<p> {{producto.descripcion}} </p>
+				<p> {{producto.name()}} </p>
 				<button ng-show="producto.canPurchase" class="btn btn-info">
 					Comprar
 				</button>
-				<button ng-hide="producto.canPurchase" class="btn btn-warning">
+				<button ng-class="{ disabled: !producto.canPurchase }" ng-hide="producto.canPurchase" class="btn btn-warning">
 					Agotado
 				</button>
+				<button ng-click="panel.selectProducto(producto)" class="btn btn-success">Editar</button>
 			</div> <!-- END CONTROLADOR -->
-		</div>
-
-		<div class="col-md-2"></div> <!-- COLUMNA 3 -->
-		
+		</div>		
 	</div> <!-- END ROW -->
+<!-- FIN PANEL 1 GALERIA -->
 
-	<!-- PIE DE PAGINA -->
+<!-- PANEL 2 AÑADIR ELEMENTO -->
+	<div class="row" ng-show="panel.isSelected(2)">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="panel panel-warning">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Vista Previa
+					</h3>
+				</div>
+				<div class="panel-body">
+					
+					
+					<form role="form" ng-controller="formControlador as formCtrl" ng-submit="formCtrl.addProducto(formCtrl.producto)">
+						<div class="prueba">
+							<h1> {{formCtrl.producto.nombre}} </h1>
+							<img ng-src="{{formCtrl.producto.images[0].full}}" width="100" height="100">
+							<h2> {{formCtrl.producto.precio | currency}}</h2>
+							<p> {{formCtrl.producto.descripcion}}</p>
+						</div> <!-- FIN VISTA PREVIA -->
+						<br><br>
+						<div class="form-group">
+							<input ng-model="formCtrl.producto.nombre" type="text" placeholder="Nombre del producto" required>
+						</div>
+						<div class="form-group">
+							<input ng-model="formCtrl.producto.precio" type="number" placeholder="Precio del producto" required>
+						</div>
+						<div class="form-group">
+							<label class="radio-inline">
+								<input ng-model="formCtrl.producto.descripcion" type="radio" name="color" value="Rojo" required>Rojo
+							</label>
+							<label class="radio-inline">
+								<input ng-model="formCtrl.producto.descripcion" type="radio" name="color" value="Azul">Azul
+							</label>
+						</div>
+						<div class="form-group">
+							<select ng-model="formCtrl.producto.images[0].full" class="form-control" required>
+								<option selected="true" value="">Escoge una imagen</option>
+								<option value="img/ruby.png">Rubí</option>
+								<option value="img/diamond.png">Diamante</option>
+							</select>
+						</div>
+						<div class="form-group">Marca si se permite la compra
+							<input type="checkbox" ng-model="formCtrl.producto.canPurchase">
+						</div>
+						<div class="form-group">Marca si esta agotado
+							<input type="checkbox" ng-model="formCtrl.producto.soldOut">
+						</div>
+				</div>
+				<div class="panel-footer">
+					<button ng-click="formCtrl.reset()" class="btn btn-danger">Reset</button>
+					<button ng-disabled="form.$invalid || isUnchanged(producto)" type="submit" class="btn btn-info">Agregar</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div> <!-- ROW -->
+<!-- FIN PANEL 2 AÑADIR ELEMENTO -->
 
-	<!-- SCRIPTS -->
+<!-- PANEL 3 EDITAR ELEMENTO -->
+	<div class="row" ng-show="panel.isSelected(3)">
+			<div class="col-md-8 col-md-offset-2">
+				<div class="panel panel-warning">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							Vista Previa
+						</h3>
+					</div>
+					<div class="panel-body">
+						
+						
+						<form role="form" ng-submit="panel.updateProducto(panel.producto)">
+							<div class="prueba">
+								<h1> {{panel.producto.nombre}} , {{panel.producto.name()}}</h1>
+								<img ng-src="{{panel.producto.images[0].full}}" width="100" height="100">
+								<h2> {{panel.producto.precio | currency}}</h2>
+								<p> {{panel.producto.descripcion}}</p>
+							</div> <!-- FIN VISTA PREVIA -->
+							<br><br>
+							<div class="form-group">
+								<input ng-model="panel.producto.nombre" type="text" required value="{{panel.producto.nombre}}">
+							</div>
+							<div class="form-group">
+								<input ng-model="panel.producto.precio" type="number" placeholder="Precio del producto" value="10" required>
+							</div>
+							<div class="form-group">
+								<label class="radio-inline">
+									<input ng-model="panel.producto.descripcion" type="radio" name="color" value="Rojo" required>Rojo
+								</label>
+								<label class="radio-inline">
+									<input ng-model="panel.producto.descripcion" type="radio" name="color" value="Azul">Azul
+								</label>
+							</div>
+							<div class="form-group">
+								<select ng-model="panel.producto.images[0].full" class="form-control" required>
+									<option selected="true" value="">Escoge una imagen</option>
+									<option value="img/ruby.png">Rubí</option>
+									<option value="img/diamond.png">Diamante</option>
+								</select>
+							</div>
+							<div class="form-group">Marca si se permite la compra
+								<input type="checkbox" ng-model="panel.producto.canPurchase">
+							</div>
+							<div class="form-group">Marca si esta agotado
+								<input type="checkbox" ng-model="panel.producto.soldOut">
+							</div>
+					</div>
+					<div class="panel-footer">
+						<!-- <button ng-click="panel.reset()" class="btn btn-danger">Reset</button> -->
+						<button type="submit" class="btn btn-info">Modificar</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div> <!-- ROW -->
+	
+
+<!-- FIN PANEL 3 EDITAR ELEMENTO -->
+
+<!-- PIE DE PAGINA -->
+
+<!-- SCRIPTS -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.4/angular.min.js"></script>
 	<script src="js/library/angular-locale_ca-es.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src='https://cdn.firebase.com/js/client/1.0.21/firebase.js'></script>
+	<script src="https://cdn.firebase.com/libs/angularfire/0.8.2/angularfire.min.js"></script>
 	<script src="js/app.js"></script>
+	<script src="js/model.js"></script>
 </body>
 </html>

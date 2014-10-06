@@ -1,12 +1,17 @@
-body { padding-top: 41px; } /*requerido por el navbar de bootstrap*/
+body { 
+	padding-top: 41px; /*requerido por el navbar de bootstrap*/
+	text-align: center;
+}
+
 .prueba {
 	border: solid 2px grey;
 	border-radius: 5px;
 	display: inline-block;
 	position: relative;
 	margin-right: 10px;
-	margin-bottom: 10px;
+	margin-top: 10px;
 	padding: 5px;
 	width: 165px;
 	text-align: center;
 }
+
